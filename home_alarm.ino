@@ -1,4 +1,4 @@
-#include "HomeAlarm.hpp"
+#include "src/HomeAlarm.hpp"
 
 byte keyPadRowPins[4] = { 5, 4, 3, 2 };
 byte keyPadColPins[4] = { 6, 7, 8, 9 };
