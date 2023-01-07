@@ -1,26 +1,22 @@
-#include "KeyController.hpp"
-#include "LedLine.hpp"
-
-#define IR_RECIVER_PIN A3
-#define LED_LINE_PIN A0
+#include "HomeAlarm.hpp"
 
 byte keyPadRowPins[4] = { 5, 4, 3, 2 };
 byte keyPadColPins[4] = { 6, 7, 8, 9 };
 
-KeyController keyController(keyPadRowPins, keyPadColPins, IR_RECIVER_PIN);
-LedLine ledLine(LED_LINE_PIN);
+Pins pins = {
+  .keyPadRowPins = keyPadRowPins,
+  .keyPadColPins = keyPadColPins,
+  .irReciverPin = A3,
+  .ledLinePin = A0
+};
+
+HomeAlarm homeAlarm(pins);
 
 void setup() {
   Serial.begin(9600);
-  keyController.begin();
-  ledLine.begin();
+  homeAlarm.begin();
 }
 
 void loop() {
-  char key = keyController.getKey();
-
-  if(key)
-    Serial.println(key);
-
-  // ledLine.blinkALL(LedLine::BLUE, LedLine::GREEN, 500);
+  homeAlarm.execute();
 }

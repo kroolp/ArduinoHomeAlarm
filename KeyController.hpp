@@ -35,8 +35,6 @@ public:
     return key;
   }
 
-  static int counter;
-
 private:
 
   char decodeRemoteKey(int command) {
