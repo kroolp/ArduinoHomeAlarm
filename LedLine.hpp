@@ -1,3 +1,5 @@
+#include "HardwareSerial.h"
+#include "Arduino.h"
 // LedLine.hpp
 #ifndef LED_LINE
 #define LED_LINE
@@ -7,10 +9,9 @@
 class LedLine {
 public:
 
-  LedLine(int ledLinePin) {
-    ledLine = Adafruit_NeoPixel(8, ledLinePin, NEO_GRB + NEO_KHZ800);
-    lastTime = millis();
-  }
+  LedLine(int ledLinePin)
+    : ledLine(8, ledLinePin, NEO_GRB + NEO_KHZ800),
+      lastTime(millis()) {}
 
   void begin() {
     ledLine.begin();
@@ -18,20 +19,38 @@ public:
     ledLine.show();
   }
 
-  int setAllLed(int color[], int interval) {
+  int setAllLed(int color[], int interval = 0) {
     if (!verifyInterval(interval))
       return 0;
 
     ledLine.setPixelColor(currentLedIndex, ledLine.Color(color[0], color[1], color[2]));
     ledLine.show();
 
-    if (currentLedIndex > 7) {
+    if (currentLedIndex >= 7) {
       currentLedIndex = 0;
       return 1;
     } else {
       currentLedIndex++;
       return 0;
     }
+  }
+
+  void blink(int index, int color1[], int color2[], int interval) {
+    if (!verifyInterval(interval))
+      return;
+
+    int* color;
+
+    if (!equalColor(color1, currentColor)) {
+      color = color1;
+    } else {
+      color = color2;
+    }
+
+    ledLine.setPixelColor(index, ledLine.Color(color[0], color[1], color[2]));
+    ledLine.show();
+
+    currentColor = color;
   }
 
   void blinkALL(int color1[], int color2[], int interval) {
@@ -52,6 +71,11 @@ public:
     ledLine.show();
 
     currentColor = color;
+  }
+
+  void clear() {
+    ledLine.clear();
+    ledLine.show();
   }
 
   static const int RED[3];
@@ -82,7 +106,7 @@ private:
 
   Adafruit_NeoPixel ledLine;
   int* currentColor;
-  int currentLedIndex;
+  int currentLedIndex = 0;
   unsigned long lastTime;
 };
 
