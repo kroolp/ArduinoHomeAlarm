@@ -1,17 +1,17 @@
-#include "HardwareSerial.h"
-#include "Arduino.h"
 // LedLine.hpp
 #ifndef LED_LINE
 #define LED_LINE
 
 #include <Adafruit_NeoPixel.h>
+#include "Arduino.h"
+#include "TaskManager.hpp"
+#include "Timer.hpp"
 
 class LedLine {
 public:
 
   LedLine(int ledLinePin)
-    : ledLine(8, ledLinePin, NEO_GRB + NEO_KHZ800),
-      lastTime(millis()) {}
+    : ledLine(8, ledLinePin, NEO_GRB + NEO_KHZ800) {}
 
   void begin() {
     ledLine.begin();
@@ -20,23 +20,23 @@ public:
   }
 
   int setAllLed(int color[], int interval = 0) {
-    if (!verifyInterval(interval))
-      return 0;
+    if (!timer.verifyInterval(interval))
+      return TASK_NOT_FINISHED;
 
     ledLine.setPixelColor(currentLedIndex, ledLine.Color(color[0], color[1], color[2]));
     ledLine.show();
 
     if (currentLedIndex >= 7) {
       currentLedIndex = 0;
-      return 1;
+      return TASK_FINISHED;
     } else {
       currentLedIndex++;
-      return 0;
+      return TASK_NOT_FINISHED;
     }
   }
 
   void blink(int index, int color1[], int color2[], int interval) {
-    if (!verifyInterval(interval))
+    if (!timer.verifyInterval(interval))
       return;
 
     int* color;
@@ -54,7 +54,7 @@ public:
   }
 
   void blinkALL(int color1[], int color2[], int interval) {
-    if (!verifyInterval(interval))
+    if (!timer.verifyInterval(interval))
       return;
 
     int* color;
@@ -95,19 +95,10 @@ private:
     return true;
   }
 
-  bool verifyInterval(int interval) {
-    if (millis() - lastTime > interval) {
-      lastTime = millis();
-      return true;
-    }
-
-    return false;
-  }
-
   Adafruit_NeoPixel ledLine;
   int* currentColor;
   int currentLedIndex = 0;
-  unsigned long lastTime;
+  Timer timer;
 };
 
 const int LedLine::RED[3] = { 15, 0, 0 };

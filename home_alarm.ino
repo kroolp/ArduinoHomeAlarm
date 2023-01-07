@@ -7,10 +7,15 @@ Pins pins = {
   .keyPadRowPins = keyPadRowPins,
   .keyPadColPins = keyPadColPins,
   .irReciverPin = A3,
-  .ledLinePin = A0
+  .ledLinePin = A0,
+  .contactronPin = A1,
+  .pirPin = A2
 };
 
-HomeAlarm homeAlarm(pins);
+String password = "1989";
+String emergencyPassword = "1993";
+
+HomeAlarm homeAlarm(pins, password, emergencyPassword);
 
 void setup() {
   Serial.begin(9600);

@@ -35,6 +35,22 @@ public:
     return key;
   }
 
+  String getKeys() {
+    char key = getKey();
+    
+    if(key)
+      if(key == 'A') {
+        String temp = str;
+        str = "";
+        return temp;
+      }
+      else {
+        str += String(key);
+      }
+
+    return "";
+  }
+
 private:
 
   char decodeRemoteKey(int command) {
@@ -50,6 +66,7 @@ private:
   static const int REMOTE_KEYS[10];
   static const char REMOTE_KEY_VALUES[10];
   static const char KEY_PAD_KEYS[4][4];
+  String str = "";
 };
 
 const int KeyController::REMOTE_KEYS[10] = { 0, 4, 6, 8, 10, 12, 14, 16, 18, 20 };

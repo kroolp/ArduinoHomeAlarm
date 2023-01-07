@@ -9,6 +9,8 @@ struct Pins {
   byte *keyPadColPins;
   byte irReciverPin;
   byte ledLinePin;
+  byte contactronPin;
+  byte pirPin;
 };
 
 
